@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:thing_easy/utilites/app_theme.dart';
 import 'package:thing_easy/widgets/head_label_widget.dart' show HeadLabelWidget;
 
 class HeadLabelColumnWidget extends StatelessWidget {
@@ -31,6 +32,12 @@ class HeadLabelColumnWidget extends StatelessWidget {
           titleText: "Someday",
           pendingTasks: 15000,
           numOfTask: 10,
+        ),
+        const SizedBox(height: 14.0),
+        Divider(
+          indent: 20.0,
+          endIndent: 20.0,
+          color: AppTheme.dark.withValues(alpha: 0.2),
         ),
       ],
     );
