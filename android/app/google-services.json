@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "717324368630",
+    "project_id": "thingeasy-8f003",
+    "storage_bucket": "thingeasy-8f003.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717324368630:android:b1adbe8fd2bf461f570ad7",
+        "android_client_info": {
+          "package_name": "com.example.thing_easy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWwKxMAcqtT2pmGYO3BV59b-fiMgOFy2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
