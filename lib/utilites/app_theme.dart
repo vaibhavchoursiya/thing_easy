@@ -14,8 +14,8 @@ class AppTheme {
     fontWeight: FontWeight.w600,
   );
   static final subHeadingStyle = GoogleFonts.inter(
-    color: AppTheme.dark,
-    fontSize: 20.0,
+    color: AppTheme.dark.withValues(alpha: 0.9),
+    fontSize: 18.0,
     fontWeight: FontWeight.w600,
   );
   static final titleStyle = GoogleFonts.inter(
