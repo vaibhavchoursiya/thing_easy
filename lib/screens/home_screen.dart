@@ -3,7 +3,6 @@ import 'package:thing_easy/utilites/app_theme.dart';
 import 'package:thing_easy/widgets/head_label_column_widget.dart';
 import 'package:thing_easy/widgets/quick_find_field.dart';
 import 'package:thing_easy/widgets/task_collection_list.dart';
-import 'package:thing_easy/widgets/task_collection_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -11,6 +10,14 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: AppTheme.accentColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50.0),
+        ),
+        onPressed: () {},
+        child: Icon(Icons.add, color: AppTheme.light, size: 45.0),
+      ),
       backgroundColor: AppTheme.light,
       body: SafeArea(
         child: SingleChildScrollView(
