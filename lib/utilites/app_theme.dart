@@ -19,7 +19,7 @@ class AppTheme {
     fontWeight: FontWeight.w600,
   );
   static final titleStyle = GoogleFonts.inter(
-    color: AppTheme.dark.withValues(alpha: 0.7),
+    color: AppTheme.dark.withValues(alpha: 0.8),
     fontSize: 16.0,
     fontWeight: FontWeight.w500,
   );
