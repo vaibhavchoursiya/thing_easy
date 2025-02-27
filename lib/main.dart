@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thing_easy/blocs/add_form/add_form_bloc.dart';
 import 'package:thing_easy/firebase_options.dart';
 import 'package:thing_easy/routes.dart';
 
@@ -15,9 +17,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      routerConfig: AppRouter.router,
+    return MultiBlocProvider(
+      providers: [BlocProvider(create: (context) => AddFormBloc())],
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        routerConfig: AppRouter.router,
+      ),
     );
   }
 }

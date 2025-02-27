@@ -1,13 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:thing_easy/blocs/add_form/add_form_bloc.dart';
+import 'package:thing_easy/blocs/add_form/add_form_event.dart';
 import 'package:thing_easy/utilites/app_theme.dart';
+import 'package:thing_easy/utilites/validator.dart';
 import 'package:thing_easy/widgets/add_task_button.dart';
 import 'package:thing_easy/widgets/check_box_widget.dart';
 import 'package:thing_easy/widgets/mtext_form_field.dart';
+import 'package:thing_easy/widgets/subtask_widget.dart';
 
-class AddTaskScreen extends StatelessWidget {
+class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({super.key});
+
+  @override
+  State<AddTaskScreen> createState() => _AddTaskScreenState();
+}
+
+class _AddTaskScreenState extends State<AddTaskScreen> {
+  final GlobalKey<FormState> addFormKey = GlobalKey<FormState>();
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController deadlineController = TextEditingController();
+
+  void clearTextEditingController() {
+    titleController.clear();
+    descriptionController.clear();
+    deadlineController.clear();
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    descriptionController.dispose();
+    deadlineController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +60,56 @@ class AddTaskScreen extends StatelessWidget {
               child: Column(
                 children: [
                   CancelButton(),
-                  AddScreenForm(),
+                  AddScreenForm(
+                    addFormKey: addFormKey,
+                    deadlineController: deadlineController,
+                    descriptionController: descriptionController,
+                    titleController: titleController,
+                  ),
+
                   Spacer(),
-                  AddTaskButton(),
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: AppTheme.grey.withValues(alpha: 0.2),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            if (addFormKey.currentState!.validate()) {
+                              final addFormBloc = context.read<AddFormBloc>();
+                              addFormBloc.add(
+                                AddTaskEvent(
+                                  deadline: DateTime.parse(
+                                    deadlineController.text,
+                                  ),
+                                  desc: descriptionController.text,
+                                  title: titleController.text,
+                                ),
+                              );
+                              clearTextEditingController();
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.accentColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4.0),
+                            ),
+                          ),
+                          child: Text(
+                            "Save",
+                            style: GoogleFonts.inter(
+                              color: AppTheme.light,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -43,18 +120,19 @@ class AddTaskScreen extends StatelessWidget {
   }
 }
 
-class AddScreenForm extends StatefulWidget {
-  const AddScreenForm({super.key});
+class AddScreenForm extends StatelessWidget {
+  final GlobalKey<FormState> addFormKey;
+  final TextEditingController titleController;
+  final TextEditingController descriptionController;
+  final TextEditingController deadlineController;
 
-  @override
-  State<AddScreenForm> createState() => _AddScreenFormState();
-}
-
-class _AddScreenFormState extends State<AddScreenForm> {
-  final GlobalKey<FormState> addFormKey = GlobalKey<FormState>();
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _deadlineController = TextEditingController();
+  const AddScreenForm({
+    super.key,
+    required this.addFormKey,
+    required this.titleController,
+    required this.descriptionController,
+    required this.deadlineController,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -70,25 +148,55 @@ class _AddScreenFormState extends State<AddScreenForm> {
 
               children: [
                 MtextFormField(
-                  controller: _titleController,
+                  controller: titleController,
+                  validator: Validator.emptyValidator,
                   hintText: "Enter you note here!",
                   maxLine: 1,
                   textStyle: AppTheme.titleStyle,
                   maxHeight: 40.0,
                 ),
                 MtextFormField(
-                  controller: _descriptionController,
+                  controller: descriptionController,
+                  validator: Validator.emptyValidator,
                   hintText: "Add you description",
                   maxLine: 4,
                   textStyle: AppTheme.subTitleStyle,
                   maxHeight: 100.0,
                 ),
                 const SizedBox(height: 20.0),
-                MDateTimeField(
-                  controller: _deadlineController,
-                  hintText: DateFormat("yyyy-MM-dd").format(DateTime.now()),
-                  textStyle: AppTheme.titleStyle,
+                Row(
+                  children: [
+                    MDateTimeField(
+                      controller: deadlineController,
+                      validator: Validator.emptyValidator,
+                      hintText: DateFormat("yyyy-MM-dd").format(DateTime.now()),
+                      textStyle: AppTheme.titleStyle,
+                    ),
+                    const SizedBox(width: 20.0),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.dark,
+                        foregroundColor: AppTheme.light,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      onPressed: () {
+                        final addFormBloc = context.read<AddFormBloc>();
+                        addFormBloc.add(AddSubTaskEvent());
+                      },
+                      child: Text("add item"),
+                    ),
+                  ],
                 ),
+                // ElevatedButton(
+                //   onPressed: () {
+                //     final addFormBloc = context.read<AddFormBloc>();
+                //     addFormBloc.add(AddSubTaskEvent(status: false, title: ""));
+                //   },
+                //   child: Text("add subTask"),
+                // ),
+                SubtaskWidget(),
               ],
             ),
           ),
@@ -108,6 +216,8 @@ class CancelButton extends StatelessWidget {
       children: [
         IconButton(
           onPressed: () {
+            final addFormBloc = context.read<AddFormBloc>();
+            addFormBloc.add(ResetAddFormEvent());
             context.pop();
           },
           icon: Icon(Icons.cancel, color: AppTheme.grey),

@@ -4,7 +4,7 @@ import 'package:thing_easy/utilites/app_theme.dart';
 
 class MtextFormField extends StatelessWidget {
   final TextEditingController controller;
-  // final Function validator;
+  final Function validator;
   final int maxLine;
   final String hintText;
   final TextStyle textStyle;
@@ -12,7 +12,7 @@ class MtextFormField extends StatelessWidget {
   const MtextFormField({
     super.key,
     required this.controller,
-    // required this.validator,
+    required this.validator,
     required this.hintText,
     required this.maxLine,
     required this.textStyle,
@@ -22,10 +22,10 @@ class MtextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      // controller: controller,
-      // validator: (value){
-      //   return validator(value)
-      // },
+      controller: controller,
+      validator: (value) {
+        return validator(value);
+      },
       minLines: 1,
       maxLines: maxLine,
       style: textStyle,
@@ -45,13 +45,13 @@ class MtextFormField extends StatelessWidget {
 class MDateTimeField extends StatelessWidget {
   final TextEditingController controller;
 
-  // final Function validator;
+  final Function validator;
   final String hintText;
   final TextStyle textStyle;
   const MDateTimeField({
     super.key,
     required this.controller,
-    // required this.validator,
+    required this.validator,
     required this.hintText,
     required this.textStyle,
   });
@@ -62,6 +62,9 @@ class MDateTimeField extends StatelessWidget {
         TextFormField(
           readOnly: true,
           controller: controller,
+          validator: (value) {
+            return validator(value);
+          },
           onTap: () async {
             final currentDate = DateTime.now();
             final DateTime? selectedDate = await showDatePicker(

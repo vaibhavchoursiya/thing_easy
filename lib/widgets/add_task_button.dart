@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:thing_easy/blocs/add_form/add_form_bloc.dart';
 import 'package:thing_easy/utilites/app_theme.dart';
 
 class AddTaskButton extends StatelessWidget {
@@ -7,6 +9,7 @@ class AddTaskButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final addFormBloc = context.read<AddFormBloc>();
     return Container(
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(color: AppTheme.grey.withValues(alpha: 0.2)),
@@ -14,7 +17,9 @@ class AddTaskButton extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              // addFormBloc.add(AddTaskEvent())
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.accentColor,
               shape: RoundedRectangleBorder(
