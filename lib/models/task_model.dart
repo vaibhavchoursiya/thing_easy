@@ -5,7 +5,7 @@ class TaskModel {
   final bool status;
   final DateTime created;
   final DateTime updated;
-  final List<TaskModel> subTask;
+  final List<SubTask> subTask;
 
   TaskModel({
     required this.title,
@@ -28,4 +28,11 @@ class TaskModel {
       "subTask": subTask,
     };
   }
+}
+
+class SubTask {
+  final String title;
+  final bool status;
+
+  SubTask({required this.title, required this.status});
 }
