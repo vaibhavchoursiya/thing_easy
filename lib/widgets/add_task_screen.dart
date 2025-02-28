@@ -45,12 +45,21 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   /// covert empty date to anytime date
   /// (a date that is represent that user does not add any deadline for the tasd)
-  String covertEmptyDateToAnytime(String date) {
+  String convertEmptyDateToAnytime(String date) {
     final deadline =
         date == ""
             ? DateFormat("yyyy-MM-dd").format(DateTime(2003, 1, 3))
             : date;
     return deadline;
+  }
+
+  /// covert empty collection to zero collection
+  /// (zero collection represent that user does not add any collection name)
+  String convertEmptyCollectionNameToZeroCollection(String collectionName) {
+    if (collectionName != "") {
+      return collectionName;
+    }
+    return "zero";
   }
 
   @override
@@ -103,7 +112,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                               Expanded(
                                 child: MtextFormField(
                                   controller: collectionNameController,
-                                  validator: Validator.emptyValidator,
+                                  validator: () => null,
                                   hintText: "Enter collection name",
                                   maxLine: 1,
                                   textStyle: AppTheme.titleStyle,
@@ -115,16 +124,19 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                   if (addFormKey.currentState!.validate()) {
                                     final addFormBloc =
                                         context.read<AddFormBloc>();
-                                    final deadline = covertEmptyDateToAnytime(
+                                    final deadline = convertEmptyDateToAnytime(
                                       deadlineController.text,
                                     );
+                                    final collectionName =
+                                        convertEmptyCollectionNameToZeroCollection(
+                                          collectionNameController.text,
+                                        );
                                     addFormBloc.add(
                                       AddTaskEvent(
                                         deadline: DateTime.parse(deadline),
                                         desc: descriptionController.text,
                                         title: titleController.text,
-                                        collectionName:
-                                            collectionNameController.text,
+                                        collectionName: collectionName,
                                       ),
                                     );
                                     clearTextEditingController();
