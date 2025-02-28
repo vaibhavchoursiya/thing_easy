@@ -2,6 +2,8 @@ import 'package:thing_easy/models/task_model.dart';
 
 abstract class AddFormState {}
 
+class LoadingAddFormState extends AddFormState {}
+
 class InitialAddFormState extends AddFormState {
   final bool status;
   final List<SubTask> subTasks;

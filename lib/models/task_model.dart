@@ -5,10 +5,11 @@ class TaskModel {
   final String desc;
   final DateTime deadline;
   final bool status;
-
+  final String collectionName;
   final List<SubTask> subTasks;
 
   TaskModel({
+    required this.collectionName,
     required this.title,
     required this.desc,
     required this.deadline,
@@ -25,6 +26,7 @@ class TaskModel {
     }
 
     return {
+      "collectionName": collectionName,
       "title": title,
       "desc": desc,
       "deadline": deadline.millisecondsSinceEpoch ~/ 1000,

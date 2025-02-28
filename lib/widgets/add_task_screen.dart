@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:thing_easy/blocs/add_form/add_form_bloc.dart';
 import 'package:thing_easy/blocs/add_form/add_form_event.dart';
+import 'package:thing_easy/blocs/add_form/add_form_state.dart';
 import 'package:thing_easy/utilites/app_theme.dart';
 import 'package:thing_easy/utilites/validator.dart';
 import 'package:thing_easy/widgets/add_task_button.dart';
@@ -24,11 +25,14 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController deadlineController = TextEditingController();
+  final TextEditingController collectionNameController =
+      TextEditingController();
 
   void clearTextEditingController() {
     titleController.clear();
     descriptionController.clear();
     deadlineController.clear();
+    collectionNameController.clear();
   }
 
   @override
@@ -36,6 +40,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     titleController.dispose();
     descriptionController.dispose();
     deadlineController.dispose();
+    collectionNameController.dispose();
     super.dispose();
   }
 
@@ -44,67 +49,94 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     final height = MediaQuery.of(context).size.height;
     return Material(
       color: Colors.transparent,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: height * 0.11),
-            Container(
-              width: double.infinity,
-              height: height * 0.5,
-              margin: const EdgeInsets.all(4.0),
-              decoration: BoxDecoration(
-                color: AppTheme.light,
-                borderRadius: BorderRadius.circular(10.0),
-              ),
+      child: BlocBuilder<AddFormBloc, AddFormState>(
+        buildWhen: (previous, current) {
+          return current is InitialAddFormState ||
+              current is LoadingAddFormState;
+        },
+        builder: (context, state) {
+          print("state: $state");
+          if (state is LoadingAddFormState) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state is InitialAddFormState) {
+            return SingleChildScrollView(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CancelButton(),
-                  AddScreenForm(
-                    addFormKey: addFormKey,
-                    deadlineController: deadlineController,
-                    descriptionController: descriptionController,
-                    titleController: titleController,
-                  ),
-
-                  Spacer(),
+                  SizedBox(height: height * 0.11),
                   Container(
-                    padding: const EdgeInsets.all(8.0),
+                    width: double.infinity,
+                    height: height * 0.5,
+                    margin: const EdgeInsets.all(4.0),
                     decoration: BoxDecoration(
-                      color: AppTheme.grey.withValues(alpha: 0.2),
+                      color: AppTheme.light,
+                      borderRadius: BorderRadius.circular(10.0),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                    child: Column(
                       children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            if (addFormKey.currentState!.validate()) {
-                              final addFormBloc = context.read<AddFormBloc>();
-                              addFormBloc.add(
-                                AddTaskEvent(
-                                  deadline: DateTime.parse(
-                                    deadlineController.text,
-                                  ),
-                                  desc: descriptionController.text,
-                                  title: titleController.text,
-                                ),
-                              );
-                              clearTextEditingController();
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppTheme.accentColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4.0),
-                            ),
+                        CancelButton(),
+                        AddScreenForm(
+                          addFormKey: addFormKey,
+                          deadlineController: deadlineController,
+                          descriptionController: descriptionController,
+                          titleController: titleController,
+                        ),
+
+                        Spacer(),
+                        Container(
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: AppTheme.grey.withValues(alpha: 0.2),
                           ),
-                          child: Text(
-                            "Save",
-                            style: GoogleFonts.inter(
-                              color: AppTheme.light,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.0,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Expanded(
+                                child: MtextFormField(
+                                  controller: collectionNameController,
+                                  validator: Validator.emptyValidator,
+                                  hintText: "Enter collection name",
+                                  maxLine: 1,
+                                  textStyle: AppTheme.titleStyle,
+                                  maxHeight: 40,
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  if (addFormKey.currentState!.validate()) {
+                                    final addFormBloc =
+                                        context.read<AddFormBloc>();
+                                    addFormBloc.add(
+                                      AddTaskEvent(
+                                        deadline: DateTime.parse(
+                                          deadlineController.text,
+                                        ),
+                                        desc: descriptionController.text,
+                                        title: titleController.text,
+                                        collectionName:
+                                            collectionNameController.text,
+                                      ),
+                                    );
+                                    clearTextEditingController();
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppTheme.accentColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(4.0),
+                                  ),
+                                ),
+                                child: Text(
+                                  "Save",
+                                  style: GoogleFonts.inter(
+                                    color: AppTheme.light,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16.0,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -112,9 +144,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
+            );
+          }
+          return SizedBox.shrink();
+        },
       ),
     );
   }

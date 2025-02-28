@@ -4,11 +4,13 @@ class AddTaskEvent extends AddFormEvent {
   final String title;
   final String desc;
   final DateTime deadline;
+  final String collectionName;
 
   AddTaskEvent({
     required this.title,
     required this.desc,
     required this.deadline,
+    required this.collectionName,
   });
 }
 

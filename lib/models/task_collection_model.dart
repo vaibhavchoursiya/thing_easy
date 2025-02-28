@@ -1,13 +1,9 @@
-import 'package:thing_easy/models/task_model.dart';
-
 class TaskCollectionModel {
-  final String name;
-  final int length;
-  final List<TaskModel> tasks;
+  final String collectionName;
 
-  TaskCollectionModel({
-    required this.name,
-    required this.length,
-    required this.tasks,
-  });
+  TaskCollectionModel({required this.collectionName});
+
+  toMap() {
+    return {"collectionName": collectionName};
+  }
 }

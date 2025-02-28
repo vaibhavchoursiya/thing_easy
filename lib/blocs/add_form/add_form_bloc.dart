@@ -67,12 +67,14 @@ class AddFormBloc extends Bloc<AddFormEvent, AddFormState> {
   }
 
   void _addTaskEvent(AddTaskEvent event, Emitter<AddFormState> emit) async {
+    emit(LoadingAddFormState());
     final TaskModel taskModel = TaskModel(
       title: event.title,
       desc: event.desc,
       deadline: event.deadline,
       status: status,
       subTasks: subTasks,
+      collectionName: event.collectionName,
     );
     await FirebaseDbServices.createTask(taskModel);
     resetAboveValues();
