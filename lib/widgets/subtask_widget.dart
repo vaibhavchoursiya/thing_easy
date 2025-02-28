@@ -84,7 +84,17 @@ class SubTaskItem extends StatelessWidget {
         ),
         Expanded(
           child: TextFormField(
+            style: AppTheme.subTitleStyle,
             initialValue: subTask.title,
+            decoration: InputDecoration(
+              hintText: "enter your subtask",
+              hintStyle: AppTheme.subTitleStyle,
+              border: InputBorder.none,
+              constraints: BoxConstraints(maxHeight: 30.0),
+              contentPadding: const EdgeInsets.all(0.0),
+              isDense: true,
+            ),
+
             onChanged: (value) {
               addFormBloc.add(
                 UpdateSubTaskTitleEvent(index: index, title: value),
