@@ -45,13 +45,11 @@ class MtextFormField extends StatelessWidget {
 class MDateTimeField extends StatelessWidget {
   final TextEditingController controller;
 
-  final Function validator;
   final String hintText;
   final TextStyle textStyle;
   const MDateTimeField({
     super.key,
     required this.controller,
-    required this.validator,
     required this.hintText,
     required this.textStyle,
   });
@@ -62,9 +60,7 @@ class MDateTimeField extends StatelessWidget {
         TextFormField(
           readOnly: true,
           controller: controller,
-          validator: (value) {
-            return validator(value);
-          },
+
           onTap: () async {
             final currentDate = DateTime.now();
             final DateTime? selectedDate = await showDatePicker(

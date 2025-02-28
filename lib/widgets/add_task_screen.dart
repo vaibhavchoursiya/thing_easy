@@ -43,6 +43,16 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     super.dispose();
   }
 
+  /// covert empty date to anytime date
+  /// (a date that is represent that user does not add any deadline for the tasd)
+  String covertEmptyDateToAnytime(String date) {
+    final deadline =
+        date == ""
+            ? DateFormat("yyyy-MM-dd").format(DateTime(2003, 1, 3))
+            : date;
+    return deadline;
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -54,7 +64,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               current is LoadingAddFormState;
         },
         builder: (context, state) {
-          print("state: $state");
           if (state is LoadingAddFormState) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -106,11 +115,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                   if (addFormKey.currentState!.validate()) {
                                     final addFormBloc =
                                         context.read<AddFormBloc>();
+                                    final deadline = covertEmptyDateToAnytime(
+                                      deadlineController.text,
+                                    );
                                     addFormBloc.add(
                                       AddTaskEvent(
-                                        deadline: DateTime.parse(
-                                          deadlineController.text,
-                                        ),
+                                        deadline: DateTime.parse(deadline),
                                         desc: descriptionController.text,
                                         title: titleController.text,
                                         collectionName:
@@ -200,8 +210,7 @@ class AddScreenForm extends StatelessWidget {
                   children: [
                     MDateTimeField(
                       controller: deadlineController,
-                      validator: Validator.emptyValidator,
-                      hintText: DateFormat("yyyy-MM-dd").format(DateTime.now()),
+                      hintText: "Deadline",
                       textStyle: AppTheme.titleStyle,
                     ),
                     const SizedBox(width: 20.0),
