@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:thing_easy/blocs/add_form/add_form_bloc.dart';
 import 'package:thing_easy/blocs/add_form/add_form_event.dart';
 import 'package:thing_easy/blocs/add_form/add_form_state.dart';
+import 'package:thing_easy/blocs/home_data/home_data_bloc.dart';
+import 'package:thing_easy/blocs/home_data/home_data_event.dart';
 import 'package:thing_easy/utilites/app_theme.dart';
 import 'package:thing_easy/utilites/validator.dart';
 import 'package:thing_easy/widgets/check_box_widget.dart';
@@ -48,7 +50,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   String convertEmptyDateToAnytime(String date) {
     final deadline =
         date == ""
-            ? DateFormat("yyyy-MM-dd").format(DateTime(2003, 1, 3))
+            ? DateFormat("yyyy-MM-dd").format(DateTime(2003, 1, 25))
             : date;
     return deadline;
   }
@@ -140,6 +142,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                       ),
                                     );
                                     clearTextEditingController();
+                                    final homeDataBloc =
+                                        context.read<HomeDataBloc>();
+                                    homeDataBloc.add(FetchHomeDataEvent());
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(

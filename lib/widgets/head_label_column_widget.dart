@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thing_easy/blocs/home_data/home_data_bloc.dart';
+import 'package:thing_easy/blocs/home_data/home_data_state.dart';
 import 'package:thing_easy/utilites/app_theme.dart';
 import 'package:thing_easy/widgets/head_label_widget.dart' show HeadLabelWidget;
 
@@ -9,31 +12,62 @@ class HeadLabelColumnWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        HeadLabelWidget(
-          emoji: "⭐",
-          titleText: "Today",
-          pendingTasks: 1,
-          numOfTask: 10,
+        BlocBuilder<HomeDataBloc, LoadHomeDataState>(
+          buildWhen: (previous, current) {
+            return previous.numberOfPendingTasks !=
+                current.numberOfPendingTasks;
+          },
+          builder: (context, state) {
+            return HeadLabelWidget(
+              emoji: "⭐",
+              titleText: "Today",
+              pendingTasks: state.numberOfPendingTasks,
+              numOfTask: state.numberOfTodayTasks,
+            );
+          },
         ),
-        HeadLabelWidget(
-          emoji: "🗓️",
-          titleText: "Upcoming",
-          pendingTasks: 10,
-          numOfTask: 1,
+        BlocBuilder<HomeDataBloc, LoadHomeDataState>(
+          builder: (context, state) {
+            return HeadLabelWidget(
+              emoji: "🗓️",
+              titleText: "Upcoming",
+              pendingTasks: -1,
+              showPendingList: false,
+              numOfTask: state.numberOfUpcomingTasks,
+            );
+          },
         ),
 
-        HeadLabelWidget(
-          emoji: "🍓",
-          titleText: "Someday",
-          pendingTasks: 15000,
-          numOfTask: 10,
+        BlocBuilder<HomeDataBloc, LoadHomeDataState>(
+          buildWhen: (previous, current) {
+            return previous.numberOfSomedayTasks !=
+                current.numberOfSomedayTasks;
+          },
+          builder: (context, state) {
+            return HeadLabelWidget(
+              emoji: "🍓",
+              titleText: "Someday",
+              pendingTasks: -1,
+              showPendingList: false,
+
+              numOfTask: state.numberOfSomedayTasks,
+            );
+          },
         ),
-        HeadLabelWidget(
-          emoji: "📚",
-          titleText: "Anytime",
-          pendingTasks: -1, // mean no pending tasks
-          numOfTask: 10,
-          showPendingList: false,
+        BlocBuilder<HomeDataBloc, LoadHomeDataState>(
+          buildWhen: (previous, current) {
+            return previous.numberOfAnytimeTasks !=
+                current.numberOfAnytimeTasks;
+          },
+          builder: (context, state) {
+            return HeadLabelWidget(
+              emoji: "📚",
+              titleText: "Anytime",
+              pendingTasks: -1, // mean no pending tasks
+              numOfTask: state.numberOfAnytimeTasks,
+              showPendingList: false,
+            );
+          },
         ),
         const SizedBox(height: 14.0),
         Divider(
