@@ -7,12 +7,14 @@ class HeadLabelWidget extends StatelessWidget {
   final String titleText;
   final int pendingTasks;
   final int numOfTask;
+  final bool showPendingList;
   const HeadLabelWidget({
     super.key,
     required this.titleText,
     required this.pendingTasks,
     required this.numOfTask,
     required this.emoji,
+    this.showPendingList = true,
   });
 
   @override
@@ -26,24 +28,25 @@ class HeadLabelWidget extends StatelessWidget {
           const SizedBox(width: 8.0),
           Text(titleText, style: AppTheme.subHeadingStyle),
           Spacer(),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12.0,
-              vertical: 2.5,
-            ),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: AppTheme.accentColor,
-            ),
-            child: Text(
-              pendingTasks.toString(),
-              style: GoogleFonts.aDLaMDisplay(
-                color: AppTheme.light,
-                fontSize: 14.0,
+          if (showPendingList)
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12.0,
+                vertical: 2.5,
+              ),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: AppTheme.accentColor,
+              ),
+              child: Text(
+                pendingTasks.toString(),
+                style: GoogleFonts.aDLaMDisplay(
+                  color: AppTheme.light,
+                  fontSize: 14.0,
+                ),
               ),
             ),
-          ),
           const SizedBox(width: 16.0),
 
           Text(numOfTask.toString(), style: AppTheme.titleStyle),

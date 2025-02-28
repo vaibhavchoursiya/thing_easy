@@ -21,17 +21,19 @@ class HeadLabelColumnWidget extends StatelessWidget {
           pendingTasks: 10,
           numOfTask: 1,
         ),
-        HeadLabelWidget(
-          emoji: "📚",
-          titleText: "Anytime",
-          pendingTasks: 15000,
-          numOfTask: 10,
-        ),
+
         HeadLabelWidget(
           emoji: "🍓",
           titleText: "Someday",
           pendingTasks: 15000,
           numOfTask: 10,
+        ),
+        HeadLabelWidget(
+          emoji: "📚",
+          titleText: "Anytime",
+          pendingTasks: -1, // mean no pending tasks
+          numOfTask: 10,
+          showPendingList: false,
         ),
         const SizedBox(height: 14.0),
         Divider(
