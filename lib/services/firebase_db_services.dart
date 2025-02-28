@@ -87,4 +87,16 @@ class FirebaseDbServices {
     final CollectionReference tasks = firestore.collection("tasks");
     await tasks.doc(id).delete();
   }
+
+  /// get all the task from database.
+  static Future<List> getTasks() async {
+    final CollectionReference tasks = firestore.collection("tasks");
+    final res = await tasks.get().then((querySnapshot) {
+      return querySnapshot.docs.map((e) {
+        return e.data();
+      }).toList();
+    });
+
+    return res;
+  }
 }
