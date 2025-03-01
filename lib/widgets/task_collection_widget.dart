@@ -33,14 +33,13 @@ class TaskCollectionWidget extends StatelessWidget {
           itemBuilder: (context, index) {
             return ListTile(
               dense: true,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 0,
-                vertical: 0.1,
+              contentPadding: const EdgeInsets.only(
+                right: 0,
+                top: 0.1,
+                bottom: 0.1,
+                left: 20.0,
               ),
-              leading: Icon(
-                Icons.timelapse_outlined,
-                color: AppTheme.dark.withValues(alpha: 0.4),
-              ),
+              leading: Icon(Icons.timelapse_outlined, color: AppTheme.grey),
               title: Text(
                 taskTitleCollections[index],
                 style: AppTheme.subTitleStyle,
