@@ -6,11 +6,24 @@ import 'package:thing_easy/services/firebase_db_services.dart';
 
 class HomeDataBloc extends Bloc<HomeDataEvent, LoadHomeDataState> {
   List pendingTasks = [];
-  List task = [];
+  List tasks = [];
   List today = [];
   List upcoming = [];
   List someday = [];
   List anytime = [];
+  List collections = []; // contain task based on collectionName;
+  List taskCollectionNames = []; // contain collection names.
+
+  resetAboveValues() {
+    pendingTasks.clear();
+    tasks.clear();
+    today.clear();
+    upcoming.clear();
+    someday.clear();
+    anytime.clear();
+    taskCollectionNames.clear();
+  }
+
   HomeDataBloc()
     : super(
         LoadHomeDataState(
@@ -25,8 +38,15 @@ class HomeDataBloc extends Bloc<HomeDataEvent, LoadHomeDataState> {
       ) {
     on<FetchHomeDataEvent>((event, emit) async {
       emit(state.copyWith(loading: true));
-      task = await FirebaseDbServices.getTasks();
-      divideTasksBasedOnDeadline(task);
+      tasks = await FirebaseDbServices.getTasks();
+      divideTasksBasedOnDeadline(tasks);
+      taskCollectionNames = await FirebaseDbServices.getTaskCollections();
+      collections = divideTasksBasedOnCollectionName(
+        tasks,
+        taskCollectionNames,
+      );
+      print(collections);
+
       emit(
         state.copyWith(
           loading: false,
@@ -35,15 +55,15 @@ class HomeDataBloc extends Bloc<HomeDataEvent, LoadHomeDataState> {
           numberOfSomedayTasks: someday.length,
           numberOfAnytimeTasks: anytime.length,
           numberOfPendingTasks: pendingTasks.length,
-          collections: task,
+          collections: collections,
         ),
       );
     });
   }
 
   /// divide task based on deadline and status
-  divideTasksBasedOnDeadline(task) {
-    for (var item in task) {
+  divideTasksBasedOnDeadline(tasks) {
+    for (var item in tasks) {
       final DateTime deadline = DateTime.fromMillisecondsSinceEpoch(
         item['deadline'] * 1000,
       );
@@ -63,5 +83,24 @@ class HomeDataBloc extends Bloc<HomeDataEvent, LoadHomeDataState> {
         }
       }
     }
+  }
+
+  /// divide task based on collectionName
+  List divideTasksBasedOnCollectionName(tasks, taskCollectionNames) {
+    List collections = [];
+
+    for (var collectionName in taskCollectionNames) {
+      final Map collection = {};
+      collection["collectionName"] = collectionName["collectionName"];
+      collection["taskTitles"] = [];
+      for (var task in tasks) {
+        if (task["collectionName"] == collectionName["collectionName"]) {
+          collection["taskTitles"].add(task["title"]);
+        }
+      }
+      collections.add(collection);
+    }
+
+    return collections;
   }
 }

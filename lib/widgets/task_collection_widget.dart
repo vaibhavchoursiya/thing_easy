@@ -3,8 +3,13 @@ import 'package:thing_easy/utilites/app_theme.dart';
 
 class TaskCollectionWidget extends StatelessWidget {
   final String collectionName;
+  final List taskTitleCollections;
 
-  const TaskCollectionWidget({super.key, required this.collectionName});
+  const TaskCollectionWidget({
+    super.key,
+    required this.collectionName,
+    required this.taskTitleCollections,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +28,7 @@ class TaskCollectionWidget extends StatelessWidget {
         ListView.builder(
           padding: const EdgeInsets.only(top: 2.0),
           shrinkWrap: true,
-          itemCount: 4,
+          itemCount: taskTitleCollections.length,
           physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
             return ListTile(
@@ -36,7 +41,10 @@ class TaskCollectionWidget extends StatelessWidget {
                 Icons.timelapse_outlined,
                 color: AppTheme.dark.withValues(alpha: 0.4),
               ),
-              title: Text("buy a house here!", style: AppTheme.titleStyle),
+              title: Text(
+                taskTitleCollections[index],
+                style: AppTheme.subTitleStyle,
+              ),
             );
           },
         ),

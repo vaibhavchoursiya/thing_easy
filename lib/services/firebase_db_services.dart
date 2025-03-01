@@ -99,4 +99,18 @@ class FirebaseDbServices {
 
     return res;
   }
+
+  /// get all the collection Name
+  static Future<List> getTaskCollections() async {
+    final CollectionReference taskCollections = firestore.collection(
+      "taskCollections",
+    );
+    final res = await taskCollections.get().then((querySnapshot) {
+      return querySnapshot.docs.map((e) {
+        return e.data();
+      }).toList();
+    });
+
+    return res;
+  }
 }
