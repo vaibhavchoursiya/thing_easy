@@ -5,8 +5,8 @@ import 'package:thing_easy/blocs/home_data/home_data_state.dart';
 import 'package:thing_easy/services/firebase_db_services.dart';
 
 class HomeDataBloc extends Bloc<HomeDataEvent, LoadHomeDataState> {
-  List pendingTasks = [];
   List tasks = [];
+  List pendingTasks = [];
   List today = [];
   List upcoming = [];
   List someday = [];
@@ -39,16 +39,26 @@ class HomeDataBloc extends Bloc<HomeDataEvent, LoadHomeDataState> {
     on<FetchHomeDataEvent>((event, emit) async {
       emit(state.copyWith(loading: true));
       tasks = await FirebaseDbServices.getTasks();
-      divideTasksBasedOnDeadline(tasks);
+      print("tasks = ${tasks.length}");
+      final deadlineData = divideTasksBasedOnDeadline(tasks);
+
+      pendingTasks = deadlineData["pendingTasks"];
+      today = deadlineData["today"];
+      upcoming = deadlineData["upcoming"];
+      anytime = deadlineData["anytime"];
+
       taskCollectionNames = await FirebaseDbServices.getTaskCollections();
       collections = divideTasksBasedOnCollectionName(
         tasks,
         taskCollectionNames,
       );
-      print(collections);
+      print("today : ${today.length}");
+      print("pendingTasks : ${pendingTasks.length}");
+      print("upcoming : ${upcoming.length}");
+      print("anytime : ${anytime.length}");
 
       emit(
-        state.copyWith(
+        LoadHomeDataState(
           loading: false,
           numberOfTodayTasks: today.length,
           numberOfUpcomingTasks: upcoming.length,
@@ -63,6 +73,11 @@ class HomeDataBloc extends Bloc<HomeDataEvent, LoadHomeDataState> {
 
   /// divide task based on deadline and status
   divideTasksBasedOnDeadline(tasks) {
+    List pendingTasks = [];
+    List today = [];
+    List upcoming = [];
+    List anytime = [];
+
     for (var item in tasks) {
       final DateTime deadline = DateTime.fromMillisecondsSinceEpoch(
         item['deadline'] * 1000,
@@ -83,6 +98,12 @@ class HomeDataBloc extends Bloc<HomeDataEvent, LoadHomeDataState> {
         }
       }
     }
+    return {
+      "today": today,
+      "pendingTasks": pendingTasks,
+      "upcoming": upcoming,
+      "anytime": anytime,
+    };
   }
 
   /// divide task based on collectionName

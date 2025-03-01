@@ -13,7 +13,7 @@ class AddFormBloc extends Bloc<AddFormEvent, AddFormState> {
     status = false;
   }
 
-  AddFormBloc() : super(InitialAddFormState(status: false, subTasks: [])) {
+  AddFormBloc() : super(LoadingAddFormState()) {
     on<AddTaskEvent>(_addTaskEvent);
     on<UpdateStatusEvent>(_updateStateEvent);
     on<AddSubTaskEvent>(_addSubTaskEvent);
@@ -78,6 +78,7 @@ class AddFormBloc extends Bloc<AddFormEvent, AddFormState> {
     );
     await FirebaseDbServices.createTask(taskModel);
     resetAboveValues();
-    emit(InitialAddFormState(status: status, subTasks: subTasks));
+    // emit(InitialAddFormState(status: status, subTasks: subTasks));
+    emit(SuccessAddFormState());
   }
 }

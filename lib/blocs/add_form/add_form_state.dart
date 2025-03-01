@@ -22,6 +22,8 @@ class SubTaskListFormState extends AddFormState {
   SubTaskListFormState({required this.subTasks});
 }
 
+class SuccessAddFormState extends AddFormState {}
+
 // class SubTaskStatusFormState extends AddFormState {
 //   final bool status;
 

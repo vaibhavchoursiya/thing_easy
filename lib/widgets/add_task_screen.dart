@@ -22,6 +22,19 @@ class AddTaskScreen extends StatefulWidget {
 }
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await initialization();
+    });
+  }
+
+  Future<void> initialization() async {
+    final addFormBloc = context.read<AddFormBloc>();
+    addFormBloc.add(ResetAddFormEvent());
+  }
+
   final GlobalKey<FormState> addFormKey = GlobalKey<FormState>();
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -69,13 +82,23 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     final height = MediaQuery.of(context).size.height;
     return Material(
       color: Colors.transparent,
-      child: BlocBuilder<AddFormBloc, AddFormState>(
+      child: BlocConsumer<AddFormBloc, AddFormState>(
+        listener: (context, state) {
+          if (state is SuccessAddFormState) {
+            final homeDataBloc = context.read<HomeDataBloc>();
+            homeDataBloc.add(FetchHomeDataEvent());
+            if (context.mounted) {
+              context.pop();
+            }
+          }
+        },
         buildWhen: (previous, current) {
           return current is InitialAddFormState ||
               current is LoadingAddFormState;
         },
         builder: (context, state) {
           if (state is LoadingAddFormState) {
+            print("loading state");
             return const Center(child: CircularProgressIndicator());
           }
           if (state is InitialAddFormState) {
@@ -122,10 +145,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                 ),
                               ),
                               ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   if (addFormKey.currentState!.validate()) {
                                     final addFormBloc =
                                         context.read<AddFormBloc>();
+
                                     final deadline = convertEmptyDateToAnytime(
                                       deadlineController.text,
                                     );
@@ -142,9 +166,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                       ),
                                     );
                                     clearTextEditingController();
-                                    final homeDataBloc =
-                                        context.read<HomeDataBloc>();
-                                    homeDataBloc.add(FetchHomeDataEvent());
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -274,8 +295,6 @@ class CancelButton extends StatelessWidget {
       children: [
         IconButton(
           onPressed: () {
-            final addFormBloc = context.read<AddFormBloc>();
-            addFormBloc.add(ResetAddFormEvent());
             context.pop();
           },
           icon: Icon(Icons.cancel, color: AppTheme.grey),

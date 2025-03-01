@@ -21,9 +21,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final homeDataBloc = context.read<HomeDataBloc>();
-      homeDataBloc.add(FetchHomeDataEvent());
+      await initializatoin();
     });
+  }
+
+  Future<void> initializatoin() async {
+    final homeDataBloc = context.read<HomeDataBloc>();
+    homeDataBloc.add(FetchHomeDataEvent());
   }
 
   @override

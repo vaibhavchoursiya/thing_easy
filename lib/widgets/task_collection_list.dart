@@ -10,9 +10,9 @@ class TaskCollectionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeDataBloc, LoadHomeDataState>(
-      buildWhen: (previous, current) {
-        return previous.collections != current.collections;
-      },
+      // buildWhen: (previous, current) {
+      //   return previous.collections.length != current.collections.length;
+      // },
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.all(18.0),
