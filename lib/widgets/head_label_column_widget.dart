@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:thing_easy/blocs/home_data/home_data_bloc.dart';
 import 'package:thing_easy/blocs/home_data/home_data_state.dart';
 import 'package:thing_easy/utilites/app_theme.dart';
@@ -14,15 +15,25 @@ class HeadLabelColumnWidget extends StatelessWidget {
       children: [
         BlocBuilder<HomeDataBloc, LoadHomeDataState>(
           buildWhen: (previous, current) {
-            return previous.numberOfPendingTasks !=
-                current.numberOfPendingTasks;
+            return previous.pendingTasks.length != current.pendingTasks.length;
           },
           builder: (context, state) {
-            return HeadLabelWidget(
-              emoji: "⭐",
-              titleText: "Today",
-              pendingTasks: state.numberOfPendingTasks,
-              numOfTask: state.numberOfTodayTasks,
+            return GestureDetector(
+              onTap: () {
+                context.push(
+                  "\\today",
+                  extra: {
+                    "todayTasks": state.todayTasks,
+                    "pendingTasks": state.pendingTasks,
+                  },
+                );
+              },
+              child: HeadLabelWidget(
+                emoji: "⭐",
+                titleText: "Today",
+                pendingTasks: state.pendingTasks.length,
+                numOfTask: state.todayTasks.length,
+              ),
             );
           },
         ),
@@ -33,15 +44,14 @@ class HeadLabelColumnWidget extends StatelessWidget {
               titleText: "Upcoming",
               pendingTasks: -1,
               showPendingList: false,
-              numOfTask: state.numberOfUpcomingTasks,
+              numOfTask: state.upcomingTasks.length,
             );
           },
         ),
 
         BlocBuilder<HomeDataBloc, LoadHomeDataState>(
           buildWhen: (previous, current) {
-            return previous.numberOfSomedayTasks !=
-                current.numberOfSomedayTasks;
+            return previous.somedayTasks.length != current.somedayTasks.length;
           },
           builder: (context, state) {
             return HeadLabelWidget(
@@ -50,21 +60,20 @@ class HeadLabelColumnWidget extends StatelessWidget {
               pendingTasks: -1,
               showPendingList: false,
 
-              numOfTask: state.numberOfSomedayTasks,
+              numOfTask: state.somedayTasks.length,
             );
           },
         ),
         BlocBuilder<HomeDataBloc, LoadHomeDataState>(
           buildWhen: (previous, current) {
-            return previous.numberOfAnytimeTasks !=
-                current.numberOfAnytimeTasks;
+            return previous.anytimeTasks.length != current.anytimeTasks.length;
           },
           builder: (context, state) {
             return HeadLabelWidget(
               emoji: "📚",
               titleText: "Anytime",
               pendingTasks: -1, // mean no pending tasks
-              numOfTask: state.numberOfAnytimeTasks,
+              numOfTask: state.anytimeTasks.length,
               showPendingList: false,
             );
           },

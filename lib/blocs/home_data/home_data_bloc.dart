@@ -28,18 +28,17 @@ class HomeDataBloc extends Bloc<HomeDataEvent, LoadHomeDataState> {
     : super(
         LoadHomeDataState(
           loading: true,
-          numberOfTodayTasks: 0,
-          numberOfUpcomingTasks: 0,
-          numberOfSomedayTasks: 0,
-          numberOfAnytimeTasks: 0,
-          numberOfPendingTasks: 0,
+          todayTasks: [],
+          upcomingTasks: [],
+          somedayTasks: [],
+          anytimeTasks: [],
+          pendingTasks: [],
           collections: [],
         ),
       ) {
     on<FetchHomeDataEvent>((event, emit) async {
       emit(state.copyWith(loading: true));
       tasks = await FirebaseDbServices.getTasks();
-      print("tasks = ${tasks.length}");
       final deadlineData = HomeDataHelper.divideTasksBasedOnDeadline(tasks);
 
       pendingTasks = deadlineData["pendingTasks"];
@@ -52,19 +51,15 @@ class HomeDataBloc extends Bloc<HomeDataEvent, LoadHomeDataState> {
         tasks,
         taskCollectionNames,
       );
-      print("today : ${today.length}");
-      print("pendingTasks : ${pendingTasks.length}");
-      print("upcoming : ${upcoming.length}");
-      print("anytime : ${anytime.length}");
 
       emit(
         LoadHomeDataState(
           loading: false,
-          numberOfTodayTasks: today.length,
-          numberOfUpcomingTasks: upcoming.length,
-          numberOfSomedayTasks: someday.length,
-          numberOfAnytimeTasks: anytime.length,
-          numberOfPendingTasks: pendingTasks.length,
+          todayTasks: today,
+          upcomingTasks: upcoming,
+          somedayTasks: someday,
+          anytimeTasks: anytime,
+          pendingTasks: pendingTasks,
           collections: collections,
         ),
       );
